@@ -14,11 +14,20 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  String name = '';
+  String phoneNo = '';
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
+  int codeSent = 0;
+  String loginButton = 'Send Code';
+  bool otpField = false;
+  String otp = '';
+  String verifyId = '';
 
   FirebaseAuth auth = FirebaseAuth.instance;
+
+
+
+  bool enterCode = false;
 
   goToHome(BuildContext context) async{
     if(_formKey.currentState!.validate()){
@@ -31,6 +40,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    auth.authStateChanges()
+        .listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+        goToHome(context);
+      }
+    });
+
     return Material(
       color: context.canvasColor,
       child: SingleChildScrollView(
@@ -39,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             Image.asset("assets/images/login_image.png", fit: BoxFit.cover),
             SizedBox(height: 20),
             Text(
-              'Welcome $name',
+              'Welcome $phoneNo',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Padding(
@@ -50,25 +70,29 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextFormField(
                       decoration: InputDecoration(
-                          hintText: 'Enter username', labelText: 'Username'),
+                          hintText: 'Enter Phone Number', labelText: 'Phone Number'),
                       validator: (value){
-                        if(value!.isEmpty){ return "Username must not be empty";}
+                        if(value!.isEmpty){ return "Phone Number must not be empty";}
                         return null;
                       },
                       onChanged: (value) {
-                        name = value;
+                        phoneNo = value;
                         setState(() {});
                       },
                     ),
-                    TextFormField(
-                      obscureText: true,
-                      validator: (value){
-                        if (value!.isEmpty){ return "Password must not be empty";}
-                        else if (value.length < 4){return "Password length should atleast be 4";}
-                        return null;
-                      } ,
-                      decoration: InputDecoration(
-                          hintText: 'Enter password', labelText: 'Password'),
+                    Visibility(
+                      visible: otpField,
+                      child: TextFormField(
+                        obscureText: true,
+                        validator: (value){
+                          otp = value!;
+                          if (value.isEmpty){ return "OTP must not be empty";}
+                          else if (value.length < 6){return "Password length should atleast be 6";}
+                          return null;
+                        } ,
+                        decoration: InputDecoration(
+                            hintText: 'Enter OTP', labelText: 'OTP'),
+                      ),
                     ),
                     SizedBox(
                       height: 40,
@@ -78,25 +102,62 @@ class _LoginPageState extends State<LoginPage> {
                       color: context.theme.buttonColor,
                       child: InkWell(
                         onTap: () async {
-                          await FirebaseAuth.instance.verifyPhoneNumber(
-                            phoneNumber: '+919650304181',
-                            verificationCompleted: (PhoneAuthCredential credential) async {
+
+                          if(enterCode == false){
+                            await FirebaseAuth.instance.verifyPhoneNumber(
+                                phoneNumber: '+91$phoneNo',
+
+
+                                verificationCompleted: (PhoneAuthCredential credential) async {
+                              setState(() {
+                                otp = credential.smsCode!;
+                              });
                               await auth.signInWithCredential(credential);
-                              goToHome(context);
+                              // if(auth.currentUser != null){
+                              //   goToHome(context);
+                              // }
                             },
-                            verificationFailed: (FirebaseAuthException e) {},
-                            codeSent: (String verificationId, int? resendToken) {
-                              print("Code Sent");
-                            },
-                            codeAutoRetrievalTimeout: (String verificationId) {},
-                          );
+
+
+                          verificationFailed: (FirebaseAuthException e) {},
+
+
+                          codeSent: (String verificationId, int? resendToken) {
+                          verifyId = verificationId;
+                          enterCode = true;
+                          setState(() {
+                          loginButton = 'Login';
+                          otpField = true;
+
+                          });
+                          print("Code Sent");
+                          },
+
+
+                          codeAutoRetrievalTimeout: (String verificationId) {},
+
+
+                            );
+                          }
+
+                          else{
+                            auth.signInWithCredential(PhoneAuthProvider.credential(
+                                verificationId: verifyId,
+                                smsCode: otp
+                              )
+                            );
+                            // if(auth.currentUser != null){
+                            //   goToHome(context);
+                            // }
+                          }
+
                         } ,
                         child: AnimatedContainer(
                           duration: Duration(seconds: 1),
                           height: 50,
                           width: changeButton ? 50 : 100,
                           alignment: Alignment.center,
-                          child: changeButton ? Icon(Icons.done, color: context.cardColor,) : Text('Login', style: TextStyle(color: context.cardColor, fontWeight: FontWeight.bold),),
+                          child: changeButton ? Icon(Icons.done, color: context.cardColor,) : Text(loginButton, style: TextStyle(color: context.cardColor, fontWeight: FontWeight.bold),),
                         ),
                       ),
                     ),
