@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "527187723940",
+    "project_id": "diagon-alley-1540a",
+    "storage_bucket": "diagon-alley-1540a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527187723940:android:b977ccebce183f36c1c831",
+        "android_client_info": {
+          "package_name": "com.example.diagon_alley"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527187723940-9dtmrtmln6fkktv1qq266uua1h2uaf9a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBe3vI390YmMZg_Js2oRuUP5wuYB9x_qwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "527187723940-9dtmrtmln6fkktv1qq266uua1h2uaf9a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
