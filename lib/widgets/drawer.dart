@@ -1,8 +1,13 @@
+import 'package:diagon_alley/screens/login_page.dart';
+import 'package:diagon_alley/widgets/logout_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:diagon_alley/widgets/logout_tile.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +26,6 @@ class MyDrawer extends StatelessWidget {
                 )
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: (){},
-            ),
-            ListTile(
               leading: Icon(Icons.person),
               title: Text('Profile'),
               onTap: (){},
@@ -34,10 +34,13 @@ class MyDrawer extends StatelessWidget {
               leading: Icon(Icons.mail_outline),
               title: Text('Contact Us'),
               onTap: (){},
-            )
+            ),
+            LogoutTile()
           ],
         ),
       ),
     );
   }
+
+
 }

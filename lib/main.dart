@@ -2,6 +2,7 @@ import 'package:diagon_alley/core/store.dart';
 import 'package:diagon_alley/screens/cart_page.dart';
 import 'package:diagon_alley/screens/home_page.dart';
 import 'package:diagon_alley/screens/login_page.dart';
+import 'package:diagon_alley/services/authservice.dart';
 import 'package:diagon_alley/utils/routes.dart';
 import 'package:diagon_alley/widgets/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,18 +26,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       //home: HomePage(),
+      home: AuthService().handleAuth(),
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: MyTheme.lightTheme(context),
       darkTheme: MyTheme.darkTheme(context),
 
-      //initialRoute: MyRoutes.homeRoute,
-      routes: {
-        "/": (context) => LoginPage(),
-        MyRoutes.homeRoute: (context) => HomePage(),
-        MyRoutes.loginRoute: (context) => LoginPage(),
-        MyRoutes.cartRoute: (context) => CartPage(),
-      },
+      //initialRoute: MyRoutes.loginRoute,
+      // routes: {
+      //   "/": (context) => LoginPage(),
+      //   MyRoutes.homeRoute: (context) => HomePage(),
+      //   MyRoutes.loginRoute: (context) => LoginPage(),
+      //   MyRoutes.cartRoute: (context) => CartPage(),
+      // },
     );
   }
 }
